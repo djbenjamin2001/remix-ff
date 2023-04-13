@@ -4,7 +4,7 @@
 
 ## Development
 
-From your terminal:
+From your terminal:  
 
 ```sh
 npm run dev
