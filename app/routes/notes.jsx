@@ -1,9 +1,12 @@
 import { redirect } from "@remix-run/node"
-import { useLoaderData } from "@remix-run/react"
+import { useLoaderData,  isRouteErrorResponse,
+  useRouteError, 
+  useCatch} from "@remix-run/react"
 import NewNote, {links as newNoteLinks} from "~/components/NewNote"
 import NoteList, {links as noteListLinks} from "../components/NoteList"
 import { getStoredNotes, storedNotes } from "../data/notes"
-
+import { Link } from "@remix-run/react"
+import { json } from "@remix-run/node"
 export default function notePage() {
   const notes = useLoaderData()
 
@@ -20,10 +23,17 @@ export default function notePage() {
   */
 
   export async function loader() {
-    //bliver brugt til at henrette loader i backend så den aldrig nærmer sig frontend
-   const notes = await getStoredNotes()
-   //return notes
-   return notes
+    const notes = await getStoredNotes();
+    if (!notes || notes.length === 0) {
+      throw json(
+        { message: 'Could not find any notes.' },
+        {
+          status: 404,
+          statusText: 'Not Found',
+        }
+      );
+    }
+    return notes;
   }
 
 
@@ -34,8 +44,8 @@ export default function notePage() {
 const formData = await request.formData()
 const noteData = Object.fromEntries(formData)
 
-if(noteData.title.trim().length < 5){
-return {message: 'Invalid title - skal mindst være 5 karakter lang'}
+if (noteData.title.trim().length < 5) {
+  return { message: 'Invalid title - must be at least 5 characters long.' };
 }
 
 const existingNotes = await getStoredNotes()
@@ -48,3 +58,30 @@ return redirect('/notes')
   export function links() {
     return[...newNoteLinks(), ...noteListLinks()];
   }
+  
+  export function ErrorBoundary() {
+    let error = useRouteError();
+    if (isRouteErrorResponse(error)) {
+      return (
+        <main>
+          <NewNote/>
+          <p className="info-message">{error.data.message}</p>
+        </main>
+      );
+    } else if (error instanceof Error) {
+      return (
+        <div className="error">
+          <h1>F error occurred!</h1>
+          <p>
+            Back to <Link to="/">safety</Link>!
+          </p>
+          <p>{error.message}</p>
+        
+        </div>
+      );
+    } else {
+      return <h1>Unknown Error</h1>;
+    }
+  }
+
+   //bliver brugt til at henrette loader i backend så den aldrig nærmer sig frontend

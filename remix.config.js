@@ -6,10 +6,10 @@ module.exports = {
   // serverBuildPath: "build/index.js",
   // publicPath: "/build/",
   future: {
-    v2_errorBoundary: true,
     v2_meta: true,
     v2_normalizeFormMethod: true,
     v2_routeConvention: true,
-    unstable_tailwind: true
+    unstable_tailwind: true,
+    v2_errorBoundary: true
   },
 };
