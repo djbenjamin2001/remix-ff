@@ -1,9 +1,11 @@
 import styles from './NoteList.css';
+import { Link } from '@remix-run/react';
 function NoteList({notes}){
     return(
         <ul id="note-list">
 {notes.map((note, index) =>(
     <li key={note.id} className="note" >
+         <Link to={note.id}>
 <article>
     <header>
         <ul className="note-meta">
@@ -24,6 +26,7 @@ function NoteList({notes}){
     </header>
     <p>{note.content}</p>
 </article>
+</Link>
     </li>
 ))}
         </ul>
