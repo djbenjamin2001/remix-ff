@@ -22,6 +22,8 @@ export default function notePage() {
   så remix tager sig af at alt dataen er loadet når der er brug for det, så vi ikke behøver at bekymre os om det.
   */
 
+
+   //bliver brugt til at henrette loader i backend så den aldrig nærmer sig frontend
   export async function loader() {
     const notes = await getStoredNotes();
     if (!notes || notes.length === 0) {
@@ -58,7 +60,7 @@ return redirect('/notes')
   export function links() {
     return[...newNoteLinks(), ...noteListLinks()];
   }
-  
+ 
   export function ErrorBoundary() {
     let error = useRouteError();
     if (isRouteErrorResponse(error)) {
@@ -84,4 +86,9 @@ return redirect('/notes')
     }
   }
 
-   //bliver brugt til at henrette loader i backend så den aldrig nærmer sig frontend
+export const meta = () => {
+  return [{
+    title: "Alle noter",
+    description: "håndter dine noter næmmere"
+  }];
+};
